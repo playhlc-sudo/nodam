@@ -784,7 +784,7 @@ html,body{
         </div>
       </div>
       <div class="record-section">
-        <h2 style="font-size:44px;">✦ 30일 성장 달력</h2>
+        <h2 style="font-size:20px;">✦ 30일 성장 달력</h2>
         <p class="ws-intro" style="margin-bottom:16px;">✦ 성장한 날 · ◇ 실수한 날 · 빈칸 기록 안 한 날</p>
         <div class="growth-grid" id="growthGrid"></div>
         <div class="growth-legend">
@@ -793,7 +793,7 @@ html,body{
         </div>
       </div>
       <div class="record-section">
-        <h2 style="font-size:44px;">📝 기록 히스토리</h2>
+        <h2 style="font-size:20px;">📝 기록 히스토리</h2>
         <p class="ws-intro" style="margin-bottom:16px;">✦ 성장한 날, ◇ 실수에서 배운 날,<br>☀️ 도즈업 실천을 날짜순으로 모아 봅니다.</p>
         <div class="history-list" id="historyList">
           <p style="text-align: center; opacity: 0.7; font-size: 40px;">아직 기록이 없습니다.</p>
@@ -834,7 +834,7 @@ html,body{
         <button class="btn-primary" style="margin-top:18px;" onclick="resetDoseToday()">오늘 체크 초기화</button>
       </div>
       <div class="ws-section">
-        <h2 style="font-size:42px;">💬 오늘의 긍정화법</h2>
+        <h2 style="font-size:20px;">💬 오늘의 긍정화법</h2>
         <p class="ws-intro">내가 나에게 건네는 말이 나의 뇌를 바꿉니다.<br>오늘의 나에게 소리 내어 말해보세요.</p>
         <div class="affirm-daily" id="affirmDaily">
           <div class="affirm-daily-cat" id="affirmDailyCat">자기효능감</div>
@@ -903,8 +903,8 @@ html,body{
 
     <!-- ===== 불편사항 입력 ===== -->
     <div class="record-section" style="margin-top:30px; border-color:rgba(239,68,68,.25);">
-      <h2 style="font-size:40px; color:#5A5A5A;">📮 앱 사용 중 불편사항</h2>
-      <p style="font-size:28px; color:#999; text-align:center; margin-bottom:20px;">개선 아이디어나 불편한 점을 자유롭게 남겨주세요</p>
+      <h2 style="font-size:20px; color:#5A5A5A;">📮 앱 사용 중 불편사항</h2>
+      <p style="font-size:14px; color:#999; text-align:center; margin-bottom:14px;">개선 아이디어나 불편한 점을 자유롭게 남겨주세요</p>
       <textarea class="story-textarea" id="feedbackText" placeholder="예: 버튼이 너무 작아요, 이런 기능이 있으면 좋겠어요..." style="min-height:160px;"></textarea>
       <button class="btn-primary" style="margin-top:16px; background:linear-gradient(135deg,#ef4444,#dc2626); box-shadow:0 14px 30px rgba(239,68,68,.25);" onclick="saveFeedback()">의견 보내기</button>
     </div>
@@ -918,7 +918,7 @@ html,body{
     </div>
 
   </div>
-  <div id="toast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:24px 32px;border-radius:18px;background:rgba(0,0,0,.6);color:#fff;font-weight:900;display:none;z-index:10001;max-width:90vw;text-align:center;font-size:40px;">
+  <div id="toast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:14px 20px;border-radius:12px;background:rgba(0,0,0,.6);color:#fff;font-weight:900;display:none;z-index:10001;max-width:90vw;text-align:center;font-size:15px;">
 </div>
 
   <script>
@@ -1693,7 +1693,7 @@ function updateUI() {
       var allDates = Object.keys(dateSet);
 
       if (allDates.length === 0) {
-        historyList.innerHTML = '<p style="text-align: center; opacity: 0.7; font-size: 40px;">아직 기록이 없습니다.<br>실수도 배움이니 편하게 기록해요 🌱</p>';
+        historyList.innerHTML = '<p style="text-align: center; opacity: 0.7; font-size: 15px;">아직 기록이 없습니다.<br>실수도 배움이니 편하게 기록해요 🌱</p>';
         return;
       }
 
