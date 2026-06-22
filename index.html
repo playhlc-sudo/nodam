@@ -1707,13 +1707,13 @@ function updateUI() {
         var doseN = dose ? dose.n : 0;
         html += '<div class="history-item"><div><div class="history-date">' + date + '</div>';
         if (record) {
-          html += '<div style="font-size: 36px; opacity: 0.8; margin-top: 10px;">목표: ' + record.targetCigarettes + unit + ' / 실제: ' + record.actualCigarettes + unit + '</div>';
-          if (record.failReason) html += '<div style="font-size: 32px; opacity: 0.7; margin-top: 6px;">📝 상황: ' + escapeHtml(record.failReason) + '</div>';
+          html += '<div style="font-size: 13px; opacity: 0.8; margin-top: 6px;">목표: ' + record.targetCigarettes + unit + ' / 실제: ' + record.actualCigarettes + unit + '</div>';
+          if (record.failReason) html += '<div style="font-size: 12px; opacity: 0.7; margin-top: 4px;">📝 상황: ' + escapeHtml(record.failReason) + '</div>';
         }
         if (doseN > 0) {
-          html += '<div style="font-size: 32px; margin-top: 10px; color:#2D6A4F; font-weight:800;">☀️ 도즈업 ' + doseN + '가지 실천</div>';
+          html += '<div style="font-size: 13px; margin-top: 6px; color:#2D6A4F; font-weight:800;">☀️ 도즈업 ' + doseN + '가지 실천</div>';
           // ✅ 무엇을 했는지 짧은 라벨로 표시
-          html += '<div style="font-size: 28px; margin-top: 4px; color:#40916C; font-weight:700; line-height:1.5;">' + escapeHtml(dose.labels.join(' · ')) + '</div>';
+          html += '<div style="font-size: 12px; margin-top: 3px; color:#40916C; font-weight:700; line-height:1.5;">' + escapeHtml(dose.labels.join(' · ')) + '</div>';
         }
         html += '</div>';
         // 오른쪽 결과 배지
@@ -1721,10 +1721,10 @@ function updateUI() {
           var isGrowth = isGrowthRecord(record);
           var resultClass = isGrowth ? 'success' : 'fail';
           var resultText = isGrowth ? '✦ 성장한 날' : '◇ 실수에서 배움';
-          html += '<div class="history-result ' + resultClass + '">' + resultText + '<br><span style="font-size: 32px;">+' + record.points + ' XP</span></div>';
+          html += '<div class="history-result ' + resultClass + '">' + resultText + '<br><span style="font-size: 14px;">+' + record.points + ' XP</span></div>';
         } else {
           // 흡연 기록 없이 도즈업만 한 날
-          html += '<div class="history-result success">☀️ 행복 충전<br><span style="font-size: 32px;">' + doseN + '가지</span></div>';
+          html += '<div class="history-result success">☀️ 행복 충전<br><span style="font-size: 14px;">' + doseN + '가지</span></div>';
         }
         html += '</div>';
       }
