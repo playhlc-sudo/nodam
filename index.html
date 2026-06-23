@@ -901,14 +901,6 @@ html,body{
 
     </div>
 
-    <!-- ===== 불편사항 입력 ===== -->
-    <div class="record-section" style="margin-top:30px; border-color:rgba(239,68,68,.25);">
-      <h2 style="font-size:20px; color:#5A5A5A;">📮 앱 사용 중 불편사항</h2>
-      <p style="font-size:14px; color:#999; text-align:center; margin-bottom:14px;">개선 아이디어나 불편한 점을 자유롭게 남겨주세요</p>
-      <textarea class="story-textarea" id="feedbackText" placeholder="예: 버튼이 너무 작아요, 이런 기능이 있으면 좋겠어요..." style="min-height:160px;"></textarea>
-      <button class="btn-primary" style="margin-top:16px; background:linear-gradient(135deg,#ef4444,#dc2626); box-shadow:0 14px 30px rgba(239,68,68,.25);" onclick="saveFeedback()">의견 보내기</button>
-    </div>
-
     <!-- ===== 출처 표기 푸터 ===== -->
     <div class="app-credit">
       <div class="app-credit-title">📖 이 앱의 바탕이 된 책</div>
@@ -2472,27 +2464,6 @@ function resetTypeCheck() {
   renderTypeCheck();
 }
 
-// ==================== 불편사항 입력 ====================
-
-
-function saveFeedback() {
-  var text = (document.getElementById('feedbackText').value || '').trim();
-  if (!text) {
-    showToast('내용을 입력해주세요!');
-    return;
-  }
-  // ✅ 서버 없이 내 폰에 의견 보관 (개인 메모)
-  try {
-    var list = JSON.parse(localStorage.getItem('my_feedback_v1') || '[]');
-    if (!Array.isArray(list)) list = [];
-    list.push({ content: text, timestamp: new Date().toISOString() });
-    localStorage.setItem('my_feedback_v1', JSON.stringify(list));
-    showToast('소중한 의견 감사합니다! 📮');
-    document.getElementById('feedbackText').value = '';
-  } catch (e) {
-    showToast('저장 공간이 부족해요.');
-  }
-}
   </script>
 </body>
 </html>
