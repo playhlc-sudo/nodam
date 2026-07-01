@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="해파밍">
+  <meta name="theme-color" content="#2D6A4F">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
   <title>해파밍 동행</title>
   <style>
 :root{
@@ -689,6 +695,19 @@ html,body{
     <div class="header">
       <h1>🏫 해파밍 동행 🏆</h1>
       <div id="deviceIdDisplay" style="font-size: 14px; color: var(--muted); margin-bottom: 10px; font-weight: 600; word-break: break-all;"></div>
+      <!-- ✅ 개인정보 안내: 이 앱은 어떤 정보도 수집·전송하지 않음 -->
+      <div style="font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:10px;">
+        🔒 이 앱의 모든 기록은 <b>이 휴대폰 안에만</b> 저장되며, 외부로 전송되거나 수집되지 않습니다.
+      </div>
+      <!-- ✅ URL에 uid가 없을 때만 표시되는 ID 고정 안내 배너 -->
+      <div id="uidNotice" style="display:none; margin:12px 0 16px; padding:16px 18px; border-radius:14px; background:#3a2020; border:1px solid #b04545; color:#ffe8e8; font-size:16px; line-height:1.55; text-align:left;">
+        <div id="uidNoticeText" style="font-weight:700; margin-bottom:14px;"></div>
+        <button id="uidFixBtn" style="width:100%; border:0; border-radius:12px; padding:16px; font-size:18px; font-weight:900; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 6px 16px rgba(45,106,79,.35); cursor:pointer;">
+          🔒 내 기록 안 지워지게 설정하기
+        </button>
+        <div style="font-size:13px; color:#e0b8b8; margin-top:10px;">버튼을 누르면 화면이 새로고침됩니다. 그 다음 ‘홈 화면에 추가’를 해주세요.</div>
+        <button id="uidDismissBtn" style="margin-top:12px; width:100%; border:0; background:transparent; color:#e0b8b8; font-size:14px; text-decoration:underline; cursor:pointer;">문제 없이 잘 쓰고 있어요 (닫기)</button>
+      </div>
       <div id="debugBox"></div>
 
       <div class="level-display">
@@ -724,6 +743,28 @@ html,body{
         <div class="affirm-hint">카드를 누르면 다른 말이 나와요</div>
       </div>
       <button class="btn-writing" onclick="showWritingOverlay()">✍️ 심심할 때 1분 필사</button>
+
+      <!-- ✅ 내 기록 백업/복원 (본인만 보관·복원, 서버 전송 없음) -->
+      <div style="margin-top:18px; padding:18px; border-radius:16px; background:var(--card); border:1px solid var(--line); text-align:left;">
+        <div style="font-weight:800; font-size:16px; color:var(--text); margin-bottom:6px;">📦 내 기록 보관</div>
+        <div style="font-size:13px; color:var(--muted); line-height:1.55; margin-bottom:14px;">
+          기록은 이 휴대폰에만 저장돼요. 폰을 바꾸거나 저장소가 초기화될 때를 대비해 <b>백업</b>해 두면, 나중에 그대로 <b>복원</b>할 수 있어요.
+        </div>
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <button onclick="exportBackup()" style="flex:1; border:0; border-radius:12px; padding:13px; font-size:14px; font-weight:800; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2)); cursor:pointer;">💾 백업 저장</button>
+          <button onclick="copyBackup()" style="flex:1; border:0; border-radius:12px; padding:13px; font-size:14px; font-weight:800; color:var(--accent); background:rgba(45,106,79,.12); cursor:pointer;">📋 코드 복사</button>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button onclick="document.getElementById('restoreFile').click()" style="flex:1; border:0; border-radius:12px; padding:13px; font-size:14px; font-weight:800; color:var(--gold); background:rgba(181,101,29,.12); cursor:pointer;">📂 파일로 복원</button>
+          <button onclick="togglePasteRestore_()" style="flex:1; border:0; border-radius:12px; padding:13px; font-size:14px; font-weight:800; color:var(--gold); background:rgba(181,101,29,.12); cursor:pointer;">📝 코드로 복원</button>
+        </div>
+        <input type="file" id="restoreFile" accept=".json,.txt,application/json" style="display:none;" onchange="importBackupFromFile(event)">
+        <div id="pasteRestoreBox" style="display:none; margin-top:10px;">
+          <textarea id="restoreText" placeholder="복사해 둔 백업 코드를 여기에 붙여넣으세요" style="width:100%; box-sizing:border-box; min-height:90px; border-radius:12px; border:1px solid var(--line); padding:10px; font-size:13px; resize:vertical;"></textarea>
+          <button onclick="restoreFromText_()" style="width:100%; margin-top:8px; border:0; border-radius:12px; padding:13px; font-size:14px; font-weight:800; color:#fff; background:var(--gold); cursor:pointer;">이 코드로 복원하기</button>
+        </div>
+      </div>
+
       <button class="btn-reset" onclick="resetChallenge()">🔄 다시 도전하기</button>
     </div>
     <div id="recordTab" class="tab-content">
@@ -914,6 +955,19 @@ html,body{
 </div>
 
   <script>
+    // ✅ URL(?uid=...)에 심긴 사용자 ID — 백엔드 없이 클라이언트에서 직접 읽음 (저장소가 비워져도 ID 유지)
+    var SERVER_UID = (function () {
+      try {
+        var m = location.search.match(/[?&]uid=([^&]+)/);
+        return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '';
+      } catch (e) { return ''; }
+    })();
+    // ✅ 앱 자기 주소(쿼리 제외) — '홈 화면에 추가' 시 이 주소에 uid를 붙여 리셋 대비
+    var EXEC_URL = (function () {
+      try { return location.origin + location.pathname; }
+      catch (e) { return String(location.href).split('?')[0]; }
+    })();
+
     var _userLoadRetry = 0;
 
     var DEVICE_ID_KEY = 'quitSmokingDeviceId';
@@ -1133,6 +1187,13 @@ html,body{
     }
 
     function getDeviceId() {
+      // ✅ 1순위: URL(?uid=...)로 들어온 ID — 홈화면 바로가기에 박혀 있어 저장소가 비워져도 유지됨
+      if (SERVER_UID) {
+        localStorage.setItem(DEVICE_ID_KEY, SERVER_UID); // 캐시(있으면 좋고)
+        addDebugLog('URL ID 사용: ' + SERVER_UID.substring(0,8) + '...');
+        return SERVER_UID;
+      }
+      // 2순위: 기존 localStorage (URL에 uid가 아직 없는 경우)
       var id = localStorage.getItem(DEVICE_ID_KEY);
       if (!id) {
         id = generateUUID();
@@ -1142,6 +1203,46 @@ html,body{
         addDebugLog('기존 ID 사용: ' + id.substring(0,8) + '...');
       }
       return id;
+    }
+
+    // ✅ URL에 uid가 없을 때 안내 배너를 띄워, 홈화면 바로가기에 ID를 박도록 유도
+    //    버튼 클릭으로만 top 이동이 허용되므로 반드시 버튼 클릭이 필요함
+    function setupUidNotice_(hadOldId) {
+      if (SERVER_UID) return; // 이미 URL에 ID가 있으면 안내 불필요 (정상 상태)
+      // ✅ '닫기'를 누른 적 있으면 표시 안 함. 저장소가 리셋되면 이 표시도 지워져 안내가 다시 뜸(자동 타겟팅)
+      if (localStorage.getItem('uidNoticeDismissed')) return;
+      var notice = document.getElementById('uidNotice');
+      var txt = document.getElementById('uidNoticeText');
+      var btn = document.getElementById('uidFixBtn');
+      if (!notice || !txt || !btn) return;
+
+      if (hadOldId) {
+        // 기존 사용자: 지금 쓰던 ID를 그대로 URL에 박아 기록이 끊기지 않게 함
+        txt.innerHTML = '⚠️ <b>기존 사용자 안내</b><br>'
+          + '기록 저장 방식이 개선되었습니다. 지금처럼 가끔 기록이 초기화되는 것을 막으려면, '
+          + '아래 버튼을 한 번 누른 뒤 <b>브라우저 메뉴(⋮) → ‘홈 화면에 추가’</b>로 바로가기를 다시 만들어 주세요.'
+          + '<br><span style="color:#ff9">기존 홈 아이콘은 삭제해 주세요.</span>';
+      } else {
+        // 신규 사용자
+        txt.innerHTML = '👋 <b>처음 오셨나요?</b><br>'
+          + '기록이 사라지지 않게 하려면, 아래 버튼을 누른 뒤 '
+          + '<b>브라우저 메뉴(⋮) → ‘홈 화면에 추가’</b>를 해주세요.';
+      }
+
+      btn.onclick = function() {
+        if (!EXEC_URL) { alert('주소를 불러오지 못했어요. 잠시 후 다시 시도해주세요.'); return; }
+        var url = EXEC_URL + '?uid=' + encodeURIComponent(deviceId);
+        try { window.top.location.href = url; } catch (e) { window.location.href = url; }
+      };
+
+      // ✅ '그냥 쓸게요(닫기)' — 닫음 표시를 저장하고 배너 숨김
+      var dismiss = document.getElementById('uidDismissBtn');
+      if (dismiss) dismiss.onclick = function() {
+        try { localStorage.setItem('uidNoticeDismissed', '1'); } catch (e) {}
+        notice.style.display = 'none';
+      };
+
+      notice.style.display = 'block';
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -1157,8 +1258,16 @@ html,body{
   var dbg = document.getElementById('debugBox');
 if (dbg) dbg.textContent = '';
 
+  // ✅ getDeviceId()가 ID를 새로 만들기 전에, 이전 사용 흔적이 있는지 먼저 확인 (기존/신규 안내 구분용)
+  var _hadOldIdBefore = !!(localStorage.getItem(DEVICE_ID_KEY)
+    || localStorage.getItem('cache_user_state_v1')
+    || localStorage.getItem('nodam_first_launch_date'));
+
   deviceId = getDeviceId();
   document.getElementById('deviceIdDisplay').textContent = 'ID: ' + deviceId;
+
+  // ✅ URL에 uid가 없으면(=리셋 위험 상태) 안내 배너 표시
+  setupUidNotice_(_hadOldIdBefore);
 
   // ✅ 긍정화법 카드를 1분 필사 문구 풀에도 추가 (명언처럼)
   for (var ac = 0; ac < affirmationCards.length; ac++) {
@@ -1232,134 +1341,6 @@ function computeBadgesLocal(allRecords, currentLevel) {
   return badges;
 }
 
-   function forceLoadUserData() {
-  addDebugLog('getUserDataRun 호출중...');
-
-  google.script.run
-    .withSuccessHandler(function(res) {
-      // 1) res가 null/undefined면 서버가 "사용자없음" 준 게 아님 -> 복구 루트로
-      if (!res) {
-        addDebugLog('⚠️ getUserData 응답이 null → 재시도/복구로 전환');
-        if (_userLoadRetry < 1) {
-          _userLoadRetry++;
-          return setTimeout(forceLoadUserData, 400); // 1회만 재시도
-        }
-        return recoverFromRecords_(); // records로 복구
-      }
-
-      addDebugLog('응답 받음: ' + JSON.stringify(res).substring(0, 120));
-
-      // 2) 정상 사용자면 그대로
-      if (res.success && res.data && res.data.user) {
-        var userData = res.data;
-        currentUser = { userId: deviceId, avgCigarettes: userData.user.avgCigarettes };
-        userLevel = userData.level || { currentLevel: 1, totalPoints: 0, badges: [] };
-
-        // ✅ 입력칸이 비어있을 때만 채움 (백그라운드 응답이 입력 중인 값을 덮어쓰지 않게)
-        var savedAvg = localStorage.getItem('savedAvgCigarettes');
-        var savedTarget = localStorage.getItem('savedTargetCigarettes');
-        var avgEl = document.getElementById('avgCigarettes');
-        var tgtEl = document.getElementById('targetCigarettes');
-        if (savedAvg) {
-          if (avgEl.value === '') avgEl.value = savedAvg;
-          currentUser.avgCigarettes = parseInt(savedAvg, 10);
-        } else if (avgEl.value === '' && currentArea === '흡연') {
-          avgEl.value = currentUser.avgCigarettes;
-        }
-        if (savedTarget && tgtEl.value === '') tgtEl.value = savedTarget;
-
-        return loadRecordsData(); // records 로드 후 UI 갱신
-      }
-
-      // 3) success=false(진짜 사용자 없음)인 경우에도 records 먼저 확인
-      addDebugLog('ℹ️ getUserData success=false → records로 먼저 확인');
-      return recoverFromRecords_(true);
-    })
-    .withFailureHandler(function(err) {
-      addDebugLog('❌ getUserData 에러: ' + String(err) + ' → records 복구 시도');
-      recoverFromRecords_();
-    })
-    .getUserDataRun({ userId: deviceId });
-}
-
-/** ✅ records 시트에 이미 있는 데이터로 복원 */
-function recoverFromRecords_(allowRegisterIfEmpty) {
-  addDebugLog('recoverFromRecords_: getRecordsRun 호출중...');
-
-  google.script.run
-    .withSuccessHandler(function(r) {
-      if (r && r.success && Array.isArray(r.data) && r.data.length > 0) {
-        records = r.data;
-        addDebugLog('✅ records로 복구 성공: ' + records.length + '개');
-
-        // currentUser/userLevel 최소 복원
-        currentUser = currentUser || { userId: deviceId, avgCigarettes: 20 };
-        userLevel = userLevel || { currentLevel: 1, totalPoints: 0, badges: [] };
-
-        // 기록 기반 레벨/점수 보정(이미 있는 함수)
-        recalcLevelFromRecords();
-
-        // 뱃지는 UI에서 기록 기반으로 재계산(이미 구현됨)
-        updateUI(); // → 절약금액/점수/뱃지/Day X 모두 records 기반으로 복원됨
-        return;
-      }
-
-      addDebugLog('records로도 못 찾음');
-      if (allowRegisterIfEmpty) {
-        addDebugLog('→ 진짜 신규로 판단, 등록 진행');
-        registerNewUser();
-      } else {
-        // 실패했어도 무조건 등록으로 덮어쓰지 않게(원인 파악용)
-        addDebugLog('⚠️ 등록은 보류(원인 점검 필요)');
-      }
-    })
-    .withFailureHandler(function(err) {
-      addDebugLog('❌ recoverFromRecords_ 에러: ' + String(err));
-      if (allowRegisterIfEmpty) registerNewUser();
-    })
-    .getRecordsRun({ userId: deviceId });
-}
-
-
-    function loadRecordsData() {
-  addDebugLog('getRecordsRun 호출중...');
-
-  google.script.run
-    .withSuccessHandler(function(res) {
-      // ✅ 추가: 서버가 뭘 돌려줬는지(성공/실패/길이) 즉시 확인
-      addDebugLog('getRecords 응답 success=' + (res && res.success) +
-                  ', len=' + (res && res.data ? res.data.length : 'null'));
-
-      if (res && res.success) {
-        records = res.data || [];
-        addDebugLog('✅ 기록 ' + records.length + '개 로드됨');
-        // ✅ 오늘 기록 여부 확인
-        var today = new Date();
-        var todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-        for (var ri = 0; ri < records.length; ri++) {
-          var recDate = String(records[ri].date || '');
-          if (recDate.indexOf(todayStr) >= 0) { todayRecorded = true; break; }
-        }
-      } else {
-        records = [];
-        addDebugLog('기록 없음');
-      }
-      recalcLevelFromRecords();
-updateUIFast_();   // 먼저
-updateUIHeavy_();  // records 있을 때만 실행
-persistCache_();   // ✅ 다음 실행 때 즉시 로딩용
-
-    })
-    .withFailureHandler(function(err) {
-      // ✅ 수정: 에러를 더 자세히
-      addDebugLog('❌ 기록 로드 실패(원문): ' + JSON.stringify(err));
-      records = [];
-      updateUI();
-    })
-    .getRecordsRun({ userId: deviceId });
-}
-
-
     function recalcLevelFromRecords() {
       if (records.length === 0) return;
       // 총 포인트 재계산
@@ -1381,37 +1362,6 @@ persistCache_();   // ✅ 다음 실행 때 즉시 로딩용
       }
     }
 
-    function registerNewUser() {
-      addDebugLog('registerUserRun 호출중...');
-      currentUser = { userId: deviceId, avgCigarettes: 20 };
-      userLevel = { currentLevel: 1, totalPoints: 0, badges: [] };
-
-      // ✅ 입력칸이 비어있을 때만 채움
-      var savedAvg = localStorage.getItem('savedAvgCigarettes');
-      var savedTarget = localStorage.getItem('savedTargetCigarettes');
-      var avgEl2 = document.getElementById('avgCigarettes');
-      var tgtEl2 = document.getElementById('targetCigarettes');
-      if (savedAvg) {
-        if (avgEl2.value === '') avgEl2.value = savedAvg;
-        currentUser.avgCigarettes = parseInt(savedAvg, 10);
-      } else if (avgEl2.value === '' && currentArea === '흡연') {
-        avgEl2.value = 20;
-      }
-      if (savedTarget && tgtEl2.value === '') tgtEl2.value = savedTarget;
-
-      google.script.run
-        .withSuccessHandler(function(regRes) {
-          addDebugLog('등록 결과: ' + JSON.stringify(regRes).substring(0, 80));
-          // 등록 후 (성공/이미등록 무관하게) 서버에서 기록 불러오기
-          loadRecordsData();
-        })
-        .withFailureHandler(function(err) {
-          addDebugLog('❌ 등록 에러: ' + String(err));
-          // 에러가 나도 서버에서 기록 불러오기 시도
-          loadRecordsData();
-        })
-        .registerUserRun({ userId: deviceId, avgCigarettes: currentUser.avgCigarettes });
-    }
 
     function updateUIFast_() {
   updateLevelDisplay();
@@ -1922,6 +1872,132 @@ function persistCache_() {
     }));
   } catch (e) {}
 }
+
+// ===== 내 기록 백업/복원 (본인 기기에만 저장, 서버 전송 없음) =====
+// localStorage 전체를 하나의 JSON으로 묶어 사용자가 직접 보관·복원한다.
+function collectAllStorage_() {
+  var data = {};
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k === null) continue;
+      data[k] = localStorage.getItem(k);
+    }
+  } catch (e) {}
+  return data;
+}
+
+function buildBackupJson_() {
+  persistCache_(); // 최신 상태를 저장소에 반영한 뒤 백업
+  return JSON.stringify({
+    _app: 'haepaming',
+    _ver: 1,
+    savedAt: new Date().toISOString(),
+    data: collectAllStorage_()
+  });
+}
+
+function backupFileName_() {
+  var d = new Date();
+  var mm = ('0' + (d.getMonth() + 1)).slice(-2);
+  var dd = ('0' + d.getDate()).slice(-2);
+  return '해파밍_백업_' + d.getFullYear() + mm + dd + '.json';
+}
+
+function exportBackup() {
+  try {
+    var json = buildBackupJson_();
+    var blob = new Blob([json], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = backupFileName_();
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+    showToast('백업 파일을 저장했어요 💾');
+  } catch (e) {
+    // 다운로드가 막힌 환경(일부 iOS)에서는 코드 복사로 안내
+    alert('백업 파일 저장이 어려운 환경이에요.\n대신 "📋 코드 복사"로 백업 코드를 복사해 메모장 등에 보관해주세요.');
+  }
+}
+
+function copyBackup() {
+  var json = buildBackupJson_();
+  function done() { showToast('백업 코드를 복사했어요 📋 메모장·카톡(나에게)에 붙여넣어 보관하세요'); }
+  function fail() {
+    // 클립보드가 막히면 붙여넣기 칸에 코드를 채워 직접 복사하도록 안내
+    var box = document.getElementById('pasteRestoreBox');
+    var ta = document.getElementById('restoreText');
+    if (box && ta) { box.style.display = 'block'; ta.value = json; ta.focus(); ta.select(); }
+    alert('아래 칸에 백업 코드를 넣었어요. 길게 눌러 전체 복사한 뒤 안전한 곳에 보관해주세요.');
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(json).then(done, fail);
+    } else {
+      var tmp = document.createElement('textarea');
+      tmp.value = json;
+      tmp.style.position = 'fixed';
+      tmp.style.opacity = '0';
+      document.body.appendChild(tmp);
+      tmp.focus(); tmp.select();
+      var ok = document.execCommand && document.execCommand('copy');
+      document.body.removeChild(tmp);
+      ok ? done() : fail();
+    }
+  } catch (e) { fail(); }
+}
+
+function togglePasteRestore_() {
+  var box = document.getElementById('pasteRestoreBox');
+  if (!box) return;
+  box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+}
+
+function importBackupFromFile(ev) {
+  var file = ev.target.files && ev.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function () {
+    restoreFromJson_(String(reader.result));
+    try { ev.target.value = ''; } catch (e) {}
+  };
+  reader.onerror = function () { alert('파일을 읽지 못했어요. 다시 시도해주세요.'); };
+  reader.readAsText(file);
+}
+
+function restoreFromText_() {
+  var ta = document.getElementById('restoreText');
+  if (!ta || !ta.value.trim()) { alert('복원할 백업 코드를 붙여넣어 주세요.'); return; }
+  restoreFromJson_(ta.value);
+}
+
+function restoreFromJson_(text) {
+  var payload;
+  try { payload = JSON.parse(text); }
+  catch (e) { alert('백업 코드/파일 형식이 올바르지 않아요.'); return; }
+  // { data: {...} } 형식과 순수 { key: value } 형식 모두 허용
+  var data = (payload && payload.data && typeof payload.data === 'object') ? payload.data : payload;
+  if (!data || typeof data !== 'object') { alert('복원할 데이터를 찾지 못했어요.'); return; }
+  var keys = [];
+  for (var k in data) { if (Object.prototype.hasOwnProperty.call(data, k)) keys.push(k); }
+  if (keys.length === 0) { alert('복원할 데이터가 비어 있어요.'); return; }
+  if (!confirm('백업으로 복원하면 지금 이 휴대폰의 기록을 덮어씁니다.\n계속할까요?')) return;
+  try {
+    for (var i = 0; i < keys.length; i++) {
+      var v = data[keys[i]];
+      if (v === null || typeof v === 'undefined') continue;
+      localStorage.setItem(keys[i], typeof v === 'string' ? v : JSON.stringify(v));
+    }
+    alert('복원 완료! 화면을 새로고침합니다.');
+    location.reload();
+  } catch (e) {
+    alert('복원 중 문제가 생겼어요: ' + e);
+  }
+}
+// ===== /백업·복원 =====
 function showToast(msg) {
   var t = document.getElementById('toast');
   if (!t) return; // 토스트 div 없으면 그냥 무시
