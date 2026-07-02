@@ -2527,5 +2527,76 @@ function resetTypeCheck() {
 }
 
   </script>
+
+<!-- ============================================================
+     [홈 화면에 추가 안내 팝업]  — 첫 방문 시 1회만 표시
+     ============================================================ -->
+<style>
+.home-guide-overlay{
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.72); display:none;
+  align-items:center; justify-content:center;
+  z-index:100000; padding:26px;
+  -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
+}
+.home-guide-overlay.show{ display:flex; }
+.home-guide-content{
+  position:relative; background:#FDF8F0; border-radius:28px;
+  padding:36px 24px 26px; max-width:420px; width:100%;
+  text-align:center; box-shadow:0 24px 60px rgba(0,0,0,.35);
+  border:1px solid rgba(60,80,60,.12);
+  animation:hgSlideUp .4s ease;
+  font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;
+}
+@keyframes hgSlideUp{ from{ transform:translateY(30px); opacity:0; } to{ transform:translateY(0); opacity:1; } }
+.home-guide-content h2{ margin:8px 0 6px; font-size:25px; font-weight:900; color:#2D6A4F; }
+.home-guide-sub{ font-size:16px; color:#7A7A7A; line-height:1.6; margin-bottom:22px; }
+.home-guide-steps{ text-align:left; display:flex; flex-direction:column; gap:12px; margin:0 auto 24px; max-width:330px; }
+.home-guide-step{ display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.75); border:1px solid rgba(60,80,60,.12); border-radius:16px; padding:14px 16px; }
+.home-guide-step .num{ flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#2D6A4F,#40916C); color:#fff; font-weight:900; font-size:16px; display:flex; align-items:center; justify-content:center; }
+.home-guide-step .txt{ font-size:16px; font-weight:700; color:#3B3B3B; line-height:1.45; }
+.home-guide-step .txt b{ color:#B5651D; }
+.home-guide-close{ width:100%; border:0; border-radius:16px; padding:18px; font-size:19px; font-weight:900; color:#fff; background:linear-gradient(135deg,#2D6A4F,#40916C); box-shadow:0 10px 24px rgba(45,106,79,.35); cursor:pointer; }
+.home-guide-x{ position:absolute; top:12px; right:14px; border:0; background:transparent; font-size:22px; line-height:1; color:#7A7A7A; cursor:pointer; padding:6px; }
+</style>
+
+<div class="home-guide-overlay" id="homeGuideOverlay">
+  <div class="home-guide-content">
+    <button class="home-guide-x" onclick="closeHomeGuide()" aria-label="닫기">✕</button>
+    <div style="font-size:42px; line-height:1;">📱</div>
+    <h2>홈 화면에 추가하세요</h2>
+    <div class="home-guide-sub">매번 QR을 찍지 않아도 되도록<br>바탕화면에 바로가기를 만들어 두면 편해요.</div>
+    <div class="home-guide-steps">
+      <div class="home-guide-step"><span class="num">1</span><span class="txt">화면 <b>하단의 &#8942; (점 3개)</b> 누르기</span></div>
+      <div class="home-guide-step"><span class="num">2</span><span class="txt"><b>현재 페이지 추가</b> 누르기</span></div>
+      <div class="home-guide-step"><span class="num">3</span><span class="txt"><b>홈 화면</b> &rarr; <b>추가</b> 누르기</span></div>
+    </div>
+    <button class="home-guide-close" onclick="closeHomeGuide()">확인했어요</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY = 'homeGuideSeen_v1';
+  window.closeHomeGuide = function(){
+    var ov = document.getElementById('homeGuideOverlay');
+    if (ov) ov.classList.remove('show');
+  };
+  function maybeShowHomeGuide(){
+    var seen = null;
+    try { seen = localStorage.getItem(KEY); } catch(e) {}
+    if (seen) return;                    // 이미 본 사용자 -> 표시 안 함
+    var ov = document.getElementById('homeGuideOverlay');
+    if (!ov) return;
+    ov.classList.add('show');            // 첫 사용자 -> 팝업 표시
+    try { localStorage.setItem(KEY, '1'); } catch(e) {}  // 표시 즉시 기록 -> 다음부터 안 뜸
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', maybeShowHomeGuide);
+  } else {
+    maybeShowHomeGuide();
+  }
+})();
+</script>
 </body>
 </html>
